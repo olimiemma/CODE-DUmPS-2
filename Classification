@@ -1,0 +1,140 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb 12 12:29:10 2023
+
+@author: legend
+"""
+import random
+
+#------------------------TESTING OUR CLASSIFEIRS-----------------------------------
+
+#---1--LEAVE ONE OUT------------
+
+
+#---Typically used when we have a small number of examples----So we want as much training data as posssible as we build our model
+
+#--Removes 1 from our examples, trainon  N-1, test on the one, put one back and remove another , train on n-1....repeat, average results
+
+def leaveOneOut(examples, method, toPrint = True):
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    for i in range(len(examples)):
+        testCase = examples[i]
+        trainingData = examples[0:i] + examples[i+1:]
+        results = method(trainingData, [testCase])
+        truePos += results[0]
+        falsePos += results[1]
+        trueNeg += results[2]
+        falseNeg += results[3]
+    if toPrint:
+        getStats(truePos, falsePos, trueNeg, falseNeg)
+    return truePos, falsePos, trueNeg, falseNeg
+
+
+
+
+#---REPEATED RANDOM SUB SMAPLING 
+
+#---When you have a larger set of data nd you solit the data 80-20. Take 80% to train on  test it on 20%
+
+
+def split80_20(examples):
+    sampleIndices = random.sample(range(len(examples)),
+                                  len(examples)//5) #sampling 20 of the indices , not the samples, at random
+    trainingSet, testSet = [], [] #assign each example to either traininbg or test
+    for i in range(len(examples)):
+        if i in sampleIndices:
+            testSet.append(examples[i])
+        else:
+            trainingSet.append(examples[i])
+    return trainingSet, testSet
+
+
+
+def randomSplits(examples, method, numSplits, toPrint = True):  #takes parameter method, thats the machine learning method. KNN vs logistic regression
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    random.seed(0)
+    for t in range(numSplits):
+        trainingSet, testSet = split80_20(examples)
+        results = method(trainingSet, testSet) #method called woth two args, yet  KNearestClassify has 4 args. YThis is solved using Lambda (knn). Diff methis taje diff No of parameters
+        truePos += results[0]
+        falsePos += results[1]
+        trueNeg += results[2]
+        falseNeg += results[3]
+    getStats(truePos/numSplits, falsePos/numSplits, #diving it by Number of splits to get the avg no of each. It aslo prints a bunch of stats for us.
+             trueNeg/numSplits, falseNeg/numSplits, toPrint)
+    return truePos/numSplits, falsePos/numSplits,\
+             trueNeg/numSplits, falseNeg/numSplits
+    
+knn = lambda training, testSet:\ #in math its called Currying after the mathmaticain Curry,.
+             KNearestClassify(training, testSet, #turni
+                              'Survived', 3)
+             
+             
+ #--------------------------Logistic Regression------------------------           
+ 
+              
+#-----------------------------------------------------------
+import sklearn
+from sklearn.linear_model import LogisticRegression
+"""
+fit(sequence of feature vectors, sequence of labels)
+Returns object of type LogisticRegression
+coef_
+Returns weights of features
+predict_proba(feature vector)
+Returns probabilities of diff labels
+"""
+
+#---Bulding the model--------------
+
+def buildModel(examples, toPrint = True):
+    featureVecs, labels = [],[]
+    for e in examples:
+        featureVecs.append(e.getFeatures())
+        labels.append(e.getLabel())
+    model = LogisticRegression().fit(featureVecs, labels)
+    if toPrint:
+        print('model.classes_ =', model.classes_)
+        for i in range(len(model.coef_)):
+            print('For label', model.classes_[1])
+            for j in range(len(model.coef_[0])):
+                print('   ', Passenger.featureNames[j], '=',
+                      model.coef_[0][j])
+    return model
+
+#---Bulding the model--------------
+
+def applyModel(model, testSet, label, prob = 0.5):
+    testFeatureVecs = [e.getFeatures() for e in testSet]
+    probs = model.predict_proba(testFeatureVecs)
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    for i in range(len(probs)):
+        if probs[i][1] > prob:
+            if testSet[i].getLabel() == label:
+                truePos += 1
+            else:
+                falsePos += 1
+        else:
+            if testSet[i].getLabel() != label:
+                trueNeg += 1
+            else:
+                falseNeg += 1
+    return truePos, falsePos, trueNeg, falseNeg
+
+def lr(trainingData, testData, prob = 0.5):
+    model = buildModel(trainingData, False)
+    results = applyModel(model, testData, 'Survived', prob)
+    return results
+    
+examples = buildTitanicExamples('TitanicPassengers.txt')
+
+random.seed(0)
+numSplits = 20
+print('Average of', numSplits, '80/20 splits LR')
+truePos, falsePos, trueNeg, falseNeg =\
+      randomSplits(examples, lr, numSplits)
+
+#Look at weights
+trainingSet, testSet = split80_20(examples)
+model = buildModel(trainingSet, True)

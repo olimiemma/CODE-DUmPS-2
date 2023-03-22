@@ -1,0 +1,22 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sat Feb 18 12:13:38 2023
+
+@author: legend
+"""
+
+#----------------------_LEAVE ONE OUT-----------------------------------------------
+def leaveOneOut(examples, method, toPrint = True):
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    for i in range(len(examples)):
+        testCase = examples[i]
+        trainingData = examples[0:i] + examples[i+1:]
+        results = method(trainingData, [testCase])
+        truePos += results[0]
+        falsePos += results[1]
+        trueNeg += results[2]
+        falseNeg += results[3]
+    if toPrint:
+        getStats(truePos, falsePos, trueNeg, falseNeg)
+    return truePos, falsePos, trueNeg, falseNeg

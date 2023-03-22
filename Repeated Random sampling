@@ -1,0 +1,74 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb 12 12:29:10 2023
+
+@author: legend
+"""
+import random
+
+#------------------------TESTING OUR CLASSIFEIRS-----------------------------------
+
+
+
+#---REPEATED RANDOM SUB SMAPLING 
+
+#---When you have a larger set of data nd you solit the data 80-20. Take 80% to train on  test it on 20%
+
+
+def split80_20(examples):
+    sampleIndices = random.sample(range(len(examples)),
+                                  len(examples)//5) #sampling 20 of the indices , not the samples, at random
+    trainingSet, testSet = [], [] #assign each example to either traininbg or test
+    for i in range(len(examples)):
+        if i in sampleIndices:
+            testSet.append(examples[i])
+        else:
+            trainingSet.append(examples[i])
+    return trainingSet, testSet
+
+
+
+def randomSplits(examples, method, numSplits, toPrint = True):  #takes parameter method, thats the machine learning method. KNN vs logistic regression
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    random.seed(0)
+    for t in range(numSplits):
+        trainingSet, testSet = split80_20(examples)
+        results = method(trainingSet, testSet)
+        truePos += results[0]
+        falsePos += results[1]
+        trueNeg += results[2]
+        falseNeg += results[3]
+    getStats(truePos/numSplits, falsePos/numSplits, #diving it by Number of splits to get the avg no of each. It aslo prints a bunch of stats for us.
+             trueNeg/numSplits, falseNeg/numSplits, toPrint)
+    return truePos/numSplits, falsePos/numSplits,\
+             trueNeg/numSplits, falseNeg/numSplits
+    
+knn = lambda training, testSet:\
+             KNearestClassify(training, testSet,
+                              'Survived', 3)
+
+#---1--LEAVE ONE OUT------------
+
+
+#---Typically used when we have a small number of examples----So we want as much training data as posssible as we build our model
+
+#--Removes 1 from our examples, trainon  N-1, test on the one, put one back and remove another , train on n-1....repeat, average results
+
+def leaveOneOut(examples, method, toPrint = True):
+    truePos, falsePos, trueNeg, falseNeg = 0, 0, 0, 0
+    for i in range(len(examples)):
+        testCase = examples[i]
+        trainingData = examples[0:i] + examples[i+1:]
+        results = method(trainingData, [testCase])
+        truePos += results[0]
+        falsePos += results[1]
+        trueNeg += results[2]
+        falseNeg += results[3]
+    if toPrint:
+        getStats(truePos, falsePos, trueNeg, falseNeg)
+    return truePos, falsePos, trueNeg, falseNeg
+
+
+
+

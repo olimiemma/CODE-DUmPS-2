@@ -1,0 +1,13 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Feb 12 13:51:49 2023
+
+@author: legend
+"""
+
+L=[x*x for x in range(10)]
+print (L)
+L=[x*x for x in range(10) if x%2==0]
+#L=[x*x for x in range(10) if x%2!=0]
+print (L)
