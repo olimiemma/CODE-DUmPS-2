@@ -1,0 +1,269 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Sun Nov  6 14:56:57 2022
+
+@author: legend
+"""
+import pylab as plt
+
+
+#---------------------------Creating nodes------------------------------------------------------------------------
+
+class Node(object):
+    def __init__(self, name):
+        """Assumes name is a string e.g node a"""
+        self.name = name
+    def getName(self):
+        return self.name
+    def __str__(self):
+        return self.name
+#---Example A------
+a= Node("Zana")
+b= Node("Nasser")
+c=Node("Lubiri")
+d=Node("Nakasero")
+e=Node("mutungo")
+f=Node("Kirinya")
+#print("Locations  are: ", a,",", b, ",", d,",",e,",",f)
+
+
+
+#-----------------------------Creating Edges---mainly Just for getting the things in edge------------------------------------------------
+
+class Edge(object):
+    def __init__(self, src, dest): #takes in the Actual INSTANCES  of Nodes, not names of nodes , but instances
+        """Assumes src and dest are nodes e.g node a , b etc"""
+        self.src = src
+        self.dest = dest
+    def getSource(self):
+        return self.src
+    def getDestination(self):
+        return self.dest
+    def __str__(self):
+        return self.src.getName() + ' ---> ' + self.dest.getName() #notice the .getname, thats cz src is an instance
+#---Example B------
+#HomeRoute=Edge(a,b)
+#DonsRoute = Edge(a,f)
+#StevoRoute =Edge(a,d)
+#print(" Work edge/Route is:" , HomeRoute)
+#print(" Stevos edge/Route is:" , StevoRoute)
+
+
+
+#----------------------- Creating a Digraph--------Remember its/goes in One directional-----------------------------------------------
+
+" we use an Adjacency list-- They work by  Associating  each node with a list of destination nodes"""
+
+class Digraph(object):
+    """edges is a dict mapping each node to a list of its children e.g   1:[A,B,D]
+     we decide to store a node as a key in a dict"""
+    def __init__(self):
+        self.edges = {} #initially an empt dict
+
+    def addNode(self, node):    
+        if node in self.edges: #check if node is not already in dict 
+            raise ValueError('Duplicate node')
+        else:
+            self.edges[node] = [] #takes in the node, not name but node , instance of node #I go into the dict, creat an entry thats akey. that key is the very node and the valueof that key is a list of destinations I can reach from that node(list is initially empty). Cz when using adjenccy list,  we want each node to have a value of a list of his  destination, i.e for one node , what are the places/destinations i can reach, those destinations are stored in this list
+
+    def addEdge(self, edge): #goes from source to destination
+        src = edge.getSource() #sets src to source edge s gotten from the edge class, ( as defined in class edge above) get
+        dest = edge.getDestination() #sets dest to destionaio edgde , as defined in class edge above
+        if not (src in self.edges and dest in self.edges):  #checks if its there already in the dict if not it adds it
+            raise ValueError('Node not in graph')
+        self.edges[src].append(dest) #go/index into the dict using the src , which is akey, it givese me back the vaue , which a list(that we created up there in addNode, then I pull out that list, add a destination to it, and put it back. This captures what we wanted to do whihc is, Nodes are represented as kepys in the dict and the dstinations as Values in the list associated with that Key/node. if you wanted to check of there's an edge between a node, check the key, check the value of the destin is in that values / list.
+
+    def childrenOf(self, node):# /returns/ checks/gets for the list of destination associated for that node. Returns the entire List::: The value , remember our value is a list of destinations
+        return self.edges[node] #go into the dict edges and look the value, should bring back a list (of destinations) [A,B,D]
+    
+    def hasNode(self, node): #checking if a node is in the graph, basically searches the keys of the dictionery. return yes or no/ Tru or false
+        return node in self.edges
+    
+    def getNode(self, name): #if I want ot get the node by its name
+        for n in self.edges: #search all the kyes in the dict
+            if n.getName() == name: #check if the key is sthe thing the am looking for, if so I return ut
+                return n
+        raise NameError(name) #we only evry get to this if I cant ind the node(node's name)
+        
+    def __str__(self): #prints all of the links in the graph
+        result = ''
+        for src in self.edges: #loop over every key/node in the graph
+            for dest in self.edges[src]: #for each I look at every destination/list 
+                result = result + src.getName() + ' --> ' + dest.getName() + '\n'   #adding into result , the name of the Source/node, followed by its destionations...#basically, for each sourcce, what can it reach
+                
+        return result[:-1] #omit final newline . return everything but the last element
+
+
+
+#---------------------------------Creating a graph-------------------------------remember its multi directional------------------------
+
+class Graph(Digraph): # its a subcalss of digraph, bcz anyting that works for digraph works for gaaph, but not vice versa
+    def addEdge(self, edge):
+        Digraph.addEdge(self, edge)
+        rev = Edge(edge.getDestination(), edge.getSource()) #simply ads another Edge, cz Digaph had one, so add another
+        Digraph.addEdge(self, rev)
+        
+
+
+
+#-----------------------------Building city code------------------------------------------------- 
+
+def buildCityGraph(graphType): #buildCityGraph(graphType)
+    g = graphType() #g = Digraph() #g=graphType
+    for name in ('Zanna', 'Lubiri', 'Nasser','Nakasero','Ntinda', 'Kirinya', 'Mutungo'): #Create 7 nodes
+        g.addNode(Node(name))
+    g.addEdge(Edge(g.getNode('Zanna'), g.getNode('Lubiri')))
+    g.addEdge(Edge(g.getNode('Zanna'), g.getNode('Nasser')))
+    g.addEdge(Edge(g.getNode('Lubiri'), g.getNode('Zanna')))
+    g.addEdge(Edge(g.getNode('Lubiri'), g.getNode('Nasser')))
+    g.addEdge(Edge(g.getNode('Nasser'), g.getNode('Nakasero')))
+    g.addEdge(Edge(g.getNode('Nakasero'), g.getNode('Ntinda')))
+    g.addEdge(Edge(g.getNode('Ntinda'), g.getNode('Kirinya')))
+    g.addEdge(Edge(g.getNode('Ntinda'), g.getNode('Nasser')))
+    g.addEdge(Edge(g.getNode('Nakasero'), g.getNode('Kirinya')))
+    g.addEdge(Edge(g.getNode('Mutungo'), g.getNode('Zanna')))
+    return g
+
+#--------------------Print Path-----------------------------------------------------------------------------
+    
+def printPath(path):
+    """Assumes path is a list of nodes"""
+    result = ''
+    for i in range(len(path)):
+        result = result + str(path[i])
+        if i != len(path) - 1:
+            result = result + '->'
+    return result 
+
+
+
+#---------------------Depth First Search (DFS)------Finding shortest Path between two places using depth first -------
+    
+def DFS(graph, start, end, path, shortest, toPrint=False):
+    """ 
+    path -- path that got me to that start node, which initially is an empty list, 
+    shortest--tells me whats the shortest path found so far
+    
+ Assumes graph is a Digraph; start and end are nodes;
+          path and shortest are lists of nodes
+       Returns a shortest path from start to end in graph
+
+    """
+    path = path + [start] #setting up path to add the start node, remember its initally an empty list.
+    if toPrint:
+        print("current DFS path", printPath(path))
+    if start == end:
+        return path
+    for node in graph.childrenOf(start): #lopping over all values/childre of that start node,looping over the list of values..remember its a list. Thosse are the edges/dest you can reach from that node. I pick the firts one/first element of the list
+        if node not in path: # is it already in the path, to avoid loops, #avoid cycles.
+            if shortest == None or len(path) < len(shortest): #if I dont have a solution(==None) or the best one I have smaller than what I have done so far , Just redo the same search
+                newPath = DFS(graph, node, end, path, shortest, toPrint)  #..Just redo the same search
+                if newPath != None: #if it comes back with a solution I set that as the best solution so far
+                    shortest = newPath # I set that as the best solution so far
+        elif toPrint:
+            print("Already Visited", node) #jsut to print that says dont add the node its already there
+
+    return shortest
+
+
+#------Setting up DFS and testing it----------------------
+    
+def shortestPath(graph, start, end, toPrint=False): #just setting up the above entire code
+     """Assumes graph is a Digraph; start and end are nodes
+     Returns a shortest path from start to end in graph"""
+     return DFS(graph, start, end, [], None, toPrint) #path is initially an empty list. Initialising things for the above func
+
+
+#-----------------tesing Shortest DFS Path-----------------------------------------------------------
+def testSP(source, destination):
+    g = buildCityGraph(Digraph)
+    sp = shortestPath(g, g.getNode(source), g.getNode(destination),
+                      toPrint = True)
+    if sp != None:
+        print('Shortest path from', source, 'to',
+              destination, 'is', printPath(sp))
+    else:
+        print('There is no path from', source, 'to', destination)
+
+
+testSP('Zanna', 'Kirinya')
+#testSP('Kirinya', 'Zanna') #weirdly It cant reverse this..why?
+##testSP('Nasser', 'Lubiri')
+
+
+
+#----------------Breadth-first Search (BFS)-------------------------
+
+def BFS(graph, start, end, toPrint = False):
+    """Assumes graph is a Digraph; start and end are nodes
+    Returns a shortest path from start to end in graph"""
+    initPath = [start] #where I started
+    pathQueue = [initPath] # A list of paths /  keeping track of the paths am yet to explore ( a path is a list of nodes)
+    if toPrint:
+        print('Current BFS path:', printPath(pathQueue))
+    while len(pathQueue) != 0: #as long as I still have things to explore
+#        if printQueue:
+#            print("Queue", len(pathQueue))
+#            for p in pathQueue:
+#                print(printPath(p))
+#                
+        #Get and remove oldest element in pathQueue
+        tmpPath = pathQueue.pop(0) #the oldest element, the one at the begining
+        print('Current BFS path:', printPath(tmpPath))
+        lastNode = tmpPath[-1] #grab the last point/element in that path and explore it, is
+        if lastNode == end:  #is it the thing am looking for ?
+            return tmpPath
+        for nextNode in graph.childrenOf(lastNode): #for each node that you canreach from that point
+            if nextNode not in tmpPath:
+                newPath = tmpPath + [nextNode] #create a new path by ending it at the end
+                pathQueue.append(newPath)
+    return None
+
+
+#--------------Tesitng BFS---------------------
+
+def shortestPath(graph, start, end, toPrint = False):
+    """Assumes graph is a Digraph; start and end are nodes
+       Returns a shortest path from start to end in graph"""
+    return BFS(graph, start, end, toPrint)
+
+testSP('Zanna', 'Kirinya')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

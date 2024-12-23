@@ -1,0 +1,97 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 29 17:32:44 2024
+
+@author: legend
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Mon Apr 29 17:29:07 2024
+
+@author: legend
+"""
+
+# -*- coding: utf-8 -*-
+
+import sys
+
+"""
+Spyder Editor
+
+
+This is a temporary pogram to test your horniness and bring appropriate porn, Get straight to the point.
+"""
+
+
+def main():
+    """Main function of the program."""
+
+    hi = "lets get it started"
+    freaky = "yeahhh baby"
+    muyayu = hi + " " + freaky
+    print(muyayu)
+    extra_muyayu = muyayu + (" " + freaky) * 3 + " " + "Give it to me"
+    # print(extraMuyayu)
+
+    cha_muy1 = "ohhh yeah "
+    cha_muy_almost = " keep going, righ there"
+    calling_call = "Whistle"
+
+    wansi = "how about we turn that up some? ==D. more!!"
+    wansi_list = list(wansi)
+    wansi_split = wansi.split()
+    wansi_turnt = "MOTHERFU**ING".join(wansi_split)
+
+    name = input("names sir, two names please? ").strip().title()
+
+    first, last = name.split()
+
+    print(f"hello, {first}")
+
+    def get_horn_level():
+        """Gets horn level from client and returns the level."""
+        while True:
+            try:
+                num_loa = int(input("How Horn are you..."))
+                if num_loa > 0:
+                    return num_loa
+                else:
+                    print("Please enter a positive integer for horn level.")
+            except ValueError:
+                print("Invalid input. Please enter a number.")
+
+    horn_level = get_horn_level()
+
+    def level_of_horn__print(n):
+        """Prints the horn level and a message."""
+        print(f"{hi},  Am gonna make you cum {n:,} times")  # commas in numbers
+
+    level_of_horn__print(horn_level)
+
+    def how_num_of_cums_gets_used():
+        """Determines how the number of cums is used based on horn level."""
+        if horn_level < 6:
+            print((cha_muy1 + calling_call) * horn_level)
+        else:
+            wansi_meth()
+
+    def wansi_meth():
+        """Handles the 'wansi' scenario."""
+        while True:
+            loa = input("Get harder? Yes/No...").strip().title()
+            if loa in ("YES", "Yes", "yes", "Y", "y"):
+                print((cha_muy1, "dont stop!") * get_horn_level())
+                break
+            elif loa in ("No", "no", "N", "n"):
+                print("Get Harder, cooomee onnn Babbyyy:==D")
+            else:
+                print("Invalid input. Please enter Yes or No.")
+
+    how_num_of_cums_gets_used()
+
+
+if __name__ == "__main__":
+    main()
