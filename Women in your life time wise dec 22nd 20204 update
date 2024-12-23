@@ -61,12 +61,10 @@ girls_thru_life = ((1998,"Kagoya Diana"),
                    (2021, "hamira"),
                    (2021, "safa"), #
                    (2021,"Ni"),
-                   (2023, "jackie Bibti") #
+                   (2023, "jackie Bibti"), #
                    (2024, "Abi"),
                    (2024, "Tish"), #:
-                   (2024, "Loretta"),
-                   
-                   )
+                   (2024, "Loretta"))
 (min_year, max_year, num_girls ) = getdata(girls_thru_life)
 
 print(f"From {min_year} to {max_year} {num_girls} girls picked my interest or where 'a girl I remember'")
