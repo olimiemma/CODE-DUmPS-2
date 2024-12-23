@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Oct 27 17:04:20 2022
+
+@author: legend
+"""
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 27 16:30:18 2022
+
+@author: legend
+"""
+
+# def quote(x,y):
+#     q=x//y
+#     r=x%y
+#     return (q,r)
+
+# print(quote(4,5))
+# (quot,rem) = quote(4,5)
+
+
+def getdata (aTuple):
+    nums=()
+    words=()
+    for t in aTuple:
+        nums=nums+(t[0],)
+        if t[1] not in words:
+            words=words+(t[1],)
+            
+    min_n =min(nums)
+    max_n =max(nums)
+    unique_words = len(words)
+    return(min_n, max_n, unique_words)
+
+girls_thru_life = ((1998,"Kagoya Diana"),
+                   (2001, "Babra with two first names"),
+                   (2003, "Kamara"),#asked to be her BF, lol. 1st ever I guess
+                   (2004, "Martha Akikii villa"), #first real love and feeling 
+                   (2005, "Florence Villa"),#wrote me letters:)
+                   (2006, "Maclyn ashaba"), 
+                   (2008, "Gloria, mayvis"),
+                   (2008, "Esther, Mwanja"), #bestFriend in Macos
+                   (2010, "Dorothy Babs"),
+                   (2011, "Bainca daisy"),
+                   #--from here its mainly ones I at leadt made out with..lol
+                   (2011,"Shiellat Shyla"), #1st official GF
+                   (2012,"Besmes"),
+                   (2012, "lydia"), 
+                   (2013,"Jahan"),
+                   (2013,"Carol Shylas"),
+                   (2014,"shiella Juba"),
+                   (2015,"some D b"),
+                   (2016,"Isabella tinder"),#didnt make out but fist tinder experience, finer than I expected
+                   (2016, "Rwandese in the bus"), 
+                   (2018, "Mildred" ), # -longest rl8n
+                   (2020, "Carol Claire"),
+                   (2021, "hamira"),
+                   (2021, "safa"), #
+                   (2021,"Ni"),
+                   (2023, "jackie Bibti") #
+                   (2024, "Abi"),
+                   (2024, "Tish"), #:
+                   (2024, "Loretta"),
+                   
+                   )
+(min_year, max_year, num_girls ) = getdata(girls_thru_life)
+
+print(f"From {min_year} to {max_year} {num_girls} girls picked my interest or where 'a girl I remember'")
